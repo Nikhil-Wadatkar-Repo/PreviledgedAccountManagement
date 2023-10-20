@@ -16,6 +16,10 @@ public class UserService {
 	private UserRepo userRepo;
 
 	public UserDetails createUserDetails(UserDetails userDetails) {
+		userDetails.setEnrolled("new");
+		userDetails.setStatusLevelI("new");
+		userDetails.setStatusLevelII("new");
+		userDetails.setStatusLevelIII("new");
 		return userRepo.save(userDetails);
 	}
 
@@ -26,7 +30,6 @@ public class UserService {
 			existedUserDetailsByID.setRole(userDetails.getRole());
 			existedUserDetailsByID.setPassword(userDetails.getPassword());
 			existedUserDetailsByID.setUserName(userDetails.getUserName());
-
 		}
 		return userRepo.save(existedUserDetailsByID);
 	}
@@ -40,7 +43,7 @@ public class UserService {
 	}
 
 	public List<UserDetails> getAllUserDetails() {
-		return userRepo.findAll();
+		return userRepo.getAllNewRecords();
 	}
 
 	public String deleteUserDetailsByID(Integer appID) {
@@ -53,5 +56,57 @@ public class UserService {
 		}
 		message = "Not found";
 		return message;
+	}
+
+	public List<UserDetails> getenrolledById(Integer id, String status) {
+		Optional<UserDetails> findById = userRepo.findById(id);
+		findById.ifPresent(ovj -> {
+			ovj.setEnrolled(status);
+			userRepo.save(ovj);
+		});
+		return userRepo.getAllNewRecords();
+	}
+
+	public List<UserDetails> showLevelIRequests() {
+		return userRepo.showLevelIApplications();
+	}
+
+	public List<UserDetails> showLevelIIRequests() {
+		return userRepo.showLevelIIApplications();
+	}
+
+	public List<UserDetails> showLevelIIIRequests() {
+		return userRepo.showLevelIIIApplications();
+	}
+
+	public List<UserDetails> changeRequests(Integer userID, Integer level, String status) {
+		Optional<UserDetails> findById = userRepo.findById(userID);
+		findById.ifPresent(obj -> {
+			switch (level) {
+			case 1: {
+				obj.setStatusLevelI(status);
+			}
+				break;
+			case 2: {
+				obj.setStatusLevelII(status);
+			}
+				break;
+			case 3: {
+				obj.setStatusLevelIII(status);
+
+			}
+				break;
+			}
+
+			userRepo.save(obj);
+		});
+		;
+
+		return userRepo.findAll();
+
+	}
+
+	public List<UserDetails> showUserAccessList() {
+		return userRepo.showUserAccessList();
 	}
 }
