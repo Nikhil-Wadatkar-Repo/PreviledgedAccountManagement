@@ -9,10 +9,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sit.bean.ModuleDetails;
+import com.sit.bean.RoleDetails;
+import com.sit.bean.StatusDetails;
 import com.sit.bean.UserDetails;
+import com.sit.dto.AppLevel_I;
+import com.sit.dto.UserDTO;
+import com.sit.dto.UserDetailsResponse;
 import com.sit.service.UserService;
 
 @CrossOrigin
@@ -22,8 +27,9 @@ public class UserController {
 	private UserService userService;
 
 	@PostMapping("/createUserDetails")
-	public UserDetails createUserDetails(@RequestBody UserDetails userDetails) {
-		return userService.createUserDetails(userDetails);
+	public UserDetails createUserDetails(@RequestBody UserDTO dto) {
+		
+		return userService.createUserDetails(dto);
 	}
 
 	@PostMapping("/updateUserDetails")
@@ -38,7 +44,7 @@ public class UserController {
 	}
 
 	@GetMapping("/getAllUserDetails")
-	public List<UserDetails> getAllUserDetails() {
+	public List<UserDetailsResponse> getAllUserDetails() {
 		return userService.getAllUserDetails();
 	}
 
@@ -48,35 +54,50 @@ public class UserController {
 	}
 
 	@GetMapping("/enrolledById/{userId}/{status}")
-	public List<UserDetails> getEnrolledById(@PathVariable("userId") Integer userID,
-			@PathVariable("status") String status) {
+	public List<UserDetailsResponse> getEnrolledById(@PathVariable("userId") Integer userID,
+			@PathVariable("status") Integer status) {
 		userService.getenrolledById(userID, status);
 		return userService.getAllUserDetails();
 	}
-	
+
 	@GetMapping("/showLevelIRequests")
-	public List<UserDetails> showLevelIRequests() {		
+	public List<AppLevel_I> showLevelIRequests() {
 		return userService.showLevelIRequests();
 	}
+
 	@GetMapping("/showLevelIIRequests")
-	public List<UserDetails> showLevelIIRequests() {		
+	public List<AppLevel_I> showLevelIIRequests() {
 		return userService.showLevelIIRequests();
 	}
+
 	@GetMapping("/showLevelIIIRequests")
-	public List<UserDetails> showLevelIIIRequests() {		
+	public List<AppLevel_I> showLevelIIIRequests() {
 		return userService.showLevelIIIRequests();
 	}
+
 	@GetMapping("/showUserAccessList")
-	public List<UserDetails> showUserAccessList() {		
+	public List<UserDetails> showUserAccessList() {
 		return userService.showUserAccessList();
 	}
 
 	@GetMapping("/changeRequests/{level}/{userId}/{status}")
-	public List<UserDetails> changeRequests(
-			@PathVariable("userId") Integer userID,
-			@PathVariable("level") Integer level,
-			@PathVariable("status") String status
-			) {		
-		return userService.changeRequests(userID,level,status);
+	public List<UserDetailsResponse> changeRequests(@PathVariable("userId") Integer userID,
+			@PathVariable("level") Integer level, @PathVariable("status") Integer statusId) {
+		return userService.changeRequests(userID, level, statusId);
+	}
+
+	@GetMapping("/showModuleList")
+	public List<ModuleDetails> showModuleList() {
+		return userService.showUserModuleList();
+	}
+
+	@GetMapping("/showStatusList")
+	public List<StatusDetails> showStatusList() {
+		return userService.showStatusList();
+	}
+
+	@GetMapping("/showRoleList")
+	public List<RoleDetails> showRoleList() {
+		return userService.showRoleList();
 	}
 }
